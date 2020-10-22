@@ -20,7 +20,7 @@
                     <select class="form-control form-control-sm select2" id="item_id" name="item_id" style="width: 100%;">
                         <option value=""></option>
                         @foreach ($items as $item)
-                            <option value="{{ $item->id }}" {{ $column->item()->find($item->id) ? 'selected' : '' }}>{{ $item->name }}</option>
+                            <option value="{{ $item->id }}" {{ $column->item()->find($item->id) ? 'selected' : '' }}>{{ $item->name }} ({{ $item->unit->name }})</option>
                         @endforeach
                     </select>
                 </div>

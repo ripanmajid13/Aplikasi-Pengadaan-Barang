@@ -52,6 +52,7 @@ class IncomingItemController extends Controller
         }
 
         $model              = new IncomingItem;
+        $model->code        = $this->code('TBM', request('date'));
         $model->date        = $this->dateYmd(request('date'));
         $model->item_id     = request('item_id');
         $model->supplier_id = request('supplier_id');
@@ -93,6 +94,7 @@ class IncomingItemController extends Controller
         }
 
         $model              = IncomingItem::findOrFail($id);
+        $model->code        = $this->code('TBM', request('date'));
         $model->date        = $this->dateYmd(request('date'));
         $model->item_id     = request('item_id');
         $model->supplier_id = request('supplier_id');
@@ -118,7 +120,7 @@ class IncomingItemController extends Controller
 
     public function table()
     {
-        $model = IncomingItem::orderBy('date', 'desc')->get();
+        $model = IncomingItem::orderBy('created_at', 'desc')->get();
         return DataTables::of($model)
             ->addColumn('date', function ($model) {
                 return Carbon::parse($model->date)->format('d/m/Y');
@@ -128,6 +130,9 @@ class IncomingItemController extends Controller
             })
             ->addColumn('supplier_id', function ($model) {
                 return $model->supplier->name;
+            })
+            ->addColumn('qty', function ($model) {
+                return $model->qty.' '.$model->item->unit->name;
             })
             ->addColumn('action', function ($model) {
                 return view($this->folder().'_action', [

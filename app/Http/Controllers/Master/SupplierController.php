@@ -102,6 +102,13 @@ class SupplierController extends Controller
         $model->save();
         $model->delete();
 
+        foreach ($model->incomingItems as $ii) {
+            $mii = IncomingItem::find($ii->id);
+            $mii->deleted_by  = auth()->user()->id;
+            $mii->save();
+            $mii->delete();
+        }
+
         return json_encode(array('icon' => 'success', 'msg' => 'Berhsil dihapus.'));
     }
 
@@ -112,8 +119,10 @@ class SupplierController extends Controller
         $model = Supplier::orderBy('name', 'asc')->get();
         return DataTables::of($model)
             ->addColumn('action', function ($model) {
+                $msg = $model->incomingItems->count() ? $model->name.', <span class="text-danger">akan menghapus juga barang masuk dan barang keluar</span>' : $model->name;
                 return view($this->folder().'_action', [
-                    'model'         => $model,
+                    'trasaction'    => $model->incomingItems->count(),
+                    'msgDelete'     => $msg,
                     'canEdit'       => $this->can('edit'),
                     'canDelete'     => $this->can('delete'),
                     'urlEdit'       => route($this->link().'edit', $model->id),

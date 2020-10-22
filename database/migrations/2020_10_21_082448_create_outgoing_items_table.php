@@ -15,10 +15,11 @@ class CreateOutgoingItemsTable extends Migration
     {
         Schema::create('outgoing_items', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 100);
             $table->date('date');
             $table->bigInteger('item_id');
-            $table->bigInteger('supplier_id');
             $table->integer('qty');
+            $table->text('description');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();

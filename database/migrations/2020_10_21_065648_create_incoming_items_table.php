@@ -15,6 +15,7 @@ class CreateIncomingItemsTable extends Migration
     {
         Schema::create('incoming_items', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 100);
             $table->date('date');
             $table->bigInteger('item_id');
             $table->bigInteger('supplier_id');

@@ -1,33 +1,73 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers;
 
 use App\Models\Unit;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 use Yajra\Datatables\Datatables;
 
-class UnitController extends Controller
+class ReportController extends Controller
 {
     public function index()
     {
         return view($this->folder().'index', [
-            'urlTable'  => route($this->link().'table'),
             'urlCreate' => route($this->link().'create'),
-            'canCreate' => $this->can('create'),
-            'canEdit'   => $this->can('edit'),
-            'canDelete' => $this->can('delete'),
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view($this->folder().'_form', [
-            'column'    => new Unit,
-            'url'       => route($this->link().'store'),
-            'method'    => 'POST',
-        ]);
+        $validator = Validator::make($request->all(), ['report' => ['required']], ['report.required' => 'Harus diisi.']);
+
+        if ($validator->fails()) {
+            return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
+        }
+
+        return json_encode(
+            array(
+                'sts'       => 'ok',
+                'urlPrint'  => route($this->link().'print', [
+                    'report'    => request('report'),
+                    'date_from' => request('date_from'),
+                    'date_to'   => request('date_to')
+                ])
+            )
+        );
+    }
+
+    public function print()
+    {
+        // $model = BudgetPlan::findOrFail($id);
+        // $title = empty($model->title_pe) ? $model->title : $model->title_pe;
+
+        // $html = view('pages.rab.budget_plan_pe.print', [
+        //     'model'     => $model,
+        //     'subTitle'  => BudgetPlanSub::where('bp_id', $id)->orderBy('created_at', 'asc')->get()
+        // ]);
+
+        switch (request('report')) {
+            case '1':
+                $html = 'Laporan Stok';
+                break;
+            case '2':
+                $view = view($this->folder().'._incoming_item', [
+                    'report'    => request('report'),
+                    'date_from' => request('date_from'),
+                    'date_to'   => request('date_to')
+                ])->render();
+                break;
+            case '3':
+                $html = 'Laporan Barang Keluar';
+                break;
+
+            default:
+                $html = 'Not Found';
+                break;
+        }
+        $pdf = PDF::loadHtml($view)->setPaper('a4');
+        return $pdf->stream('Laporan.pdf');
     }
 
     public function store(Request $request)

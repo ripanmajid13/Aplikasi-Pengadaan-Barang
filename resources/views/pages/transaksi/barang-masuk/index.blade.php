@@ -39,6 +39,7 @@
             columns: [
                 {data: "DT_RowIndex", class: "align-middle"},
                 {data: "date", class: "align-middle"},
+                {data: "code", class: "align-middle"},
                 {data: "item_id", class: "align-middle"},
                 {data: "supplier_id", class: "align-middle"},
                 {data: "qty", class: "align-middle"},
@@ -121,6 +122,7 @@
 
             me.find('.form-control').removeClass('is-invalid');
             me.find('.error').remove();
+            me.find('.form-group .select2-container .selection .select2-selection').removeClass('error-select2');
 
             me.find('.btn-submit').html(text+'&nbsp; <i id="loading" class="fas fa-spinner fa-pulse"></i>');
             me.find('.btn-submit').attr('type', 'button');
@@ -260,6 +262,7 @@
                     <tr>
                         <th>#</th>
                         <th>Tanggal</th>
+                        <th>No Transaksi</th>
                         <th>Barang</th>
                         <th>Supplier</th>
                         <th>Jumlah</th>

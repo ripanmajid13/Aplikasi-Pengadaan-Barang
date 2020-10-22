@@ -18,6 +18,7 @@ use App\Http\Controllers\Privileges\{
     UserHasPermissionController
 };
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Transaction\{IncomingItemController, OutgoingItemController};
 use Illuminate\Support\Facades\{Route, Auth};
@@ -52,6 +53,29 @@ Route::group(['middleware' => 'prevent.back.history'], function () {
             Route::get('table', [SettingController::class, 'table'])->name('table');
             Route::post('{id}/edit', [SettingController::class, 'edit'])->name('edit');
             Route::put('{id}', [SettingController::class, 'update'])->name('update');
+        });
+
+        Route::group(['prefix' => 'laporan', 'as' => 'laporan.', 'middleware' => 'permission:laporan'], function () {
+            Route::get('', [ReportController::class, 'index'])->name('index');
+            Route::get('print', [ReportController::class, 'print'])->name('print');
+            Route::post('create', [ReportController::class, 'create'])->name('create');
+
+
+
+
+            // Route::group(['middleware' => 'permission:laporan-create'], function () {
+
+            //     Route::post('store', [ReportController::class, 'store'])->name('store');
+            // });
+            // Route::group(['middleware' => ['permission:laporan-edit', 'permission:laporan-roles']], function () {
+            //     Route::group(['middleware' => 'permission:laporan-edit'], function () {
+            //         Route::post('{id}/edit', [ReportController::class, 'edit'])->name('edit');
+            //     });
+            //     Route::put('{id}', [ReportController::class, 'update'])->name('update');
+            // });
+            // Route::group(['middleware' => 'permission:laporan-delete'], function () {
+            //     Route::delete('{id}', [ReportController::class, 'destroy'])->name('destroy');
+            // });
         });
 
         // ---------------------------------------------------------------

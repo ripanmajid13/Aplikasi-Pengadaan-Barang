@@ -28,7 +28,6 @@ class OutgoingItemController extends Controller
             'column'    => new OutgoingItem,
             'url'       => route($this->link().'store'),
             'items'     => Item::orderBy('name', 'asc')->get(),
-            'suppliers' => Supplier::orderBy('name', 'asc')->get(),
             'method'    => 'POST',
         ]);
     }
@@ -38,24 +37,31 @@ class OutgoingItemController extends Controller
         $validator = Validator::make($request->all(), [
             'date'          => ['required'],
             'item_id'       => ['required'],
-            'supplier_id'   => ['required'],
             'qty'           => ['required'],
+            'description'   => ['required'],
         ],  [
             'date.required'         => 'Harus diisi.',
             'item_id.required'      => 'Harus diisi.',
-            'supplier_id.required'  => 'Harus diisi.',
             'qty.required'          => 'Harus diisi.',
+            'description.required'  => 'Harus diisi.',
         ]);
 
         if ($validator->fails()) {
             return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
         }
 
+        $item   = Item::find(request('item_id'));
+        $stock  = $item->stock($item->id);
+        if ($stock < request('qty')) {
+            return json_encode(array('sts' => 'store', 'icon' => 'warning', 'msg' => 'Stock tidak tersedia.'));
+        }
+
         $model              = new OutgoingItem;
+        $model->code        = $this->code('TBK', request('date'));
         $model->date        = $this->dateYmd(request('date'));
         $model->item_id     = request('item_id');
-        $model->supplier_id = request('supplier_id');
         $model->qty         = request('qty');
+        $model->description = request('description');
         $model->created_by  = auth()->user()->id;
         $model->updated_by  = auth()->user()->id;
         $model->save();
@@ -70,7 +76,6 @@ class OutgoingItemController extends Controller
             'url'       => route($this->link().'update', $id),
             'method'    => 'PUT',
             'items'     => Item::orderBy('name', 'asc')->get(),
-            'suppliers' => Supplier::orderBy('name', 'asc')->get(),
         ]);
     }
 
@@ -79,24 +84,31 @@ class OutgoingItemController extends Controller
         $validator = Validator::make($request->all(), [
             'date'          => ['required'],
             'item_id'       => ['required'],
-            'supplier_id'   => ['required'],
             'qty'           => ['required'],
+            'description'   => ['required'],
         ],  [
             'date.required'         => 'Harus diisi.',
             'item_id.required'      => 'Harus diisi.',
-            'supplier_id.required'  => 'Harus diisi.',
             'qty.required'          => 'Harus diisi.',
+            'description.required'  => 'Harus diisi.',
         ]);
 
         if ($validator->fails()) {
             return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
         }
 
+        $item = Item::find(request('item_id'));
+        $stock  = $item->stock($item->id, $id);
+        if ($stock < request('qty')) {
+            return json_encode(array('sts' => 'store', 'icon' => 'warning', 'msg' => 'Stock tidak tersedia.'));
+        }
+
         $model              = OutgoingItem::findOrFail($id);
+        $model->code        = $this->code('TBK', request('date'));
         $model->date        = $this->dateYmd(request('date'));
         $model->item_id     = request('item_id');
-        $model->supplier_id = request('supplier_id');
         $model->qty         = request('qty');
+        $model->description = request('description');
         $model->updated_by  = auth()->user()->id;
         $model->save();
 
@@ -118,7 +130,7 @@ class OutgoingItemController extends Controller
 
     public function table()
     {
-        $model = OutgoingItem::orderBy('date', 'desc')->get();
+        $model = OutgoingItem::orderBy('created_at', 'desc')->get();
         return DataTables::of($model)
             ->addColumn('date', function ($model) {
                 return Carbon::parse($model->date)->format('d/m/Y');
@@ -126,8 +138,8 @@ class OutgoingItemController extends Controller
             ->addColumn('item_id', function ($model) {
                 return $model->item->name;
             })
-            ->addColumn('supplier_id', function ($model) {
-                return $model->supplier->name;
+            ->addColumn('qty', function ($model) {
+                return $model->qty.' '.$model->item->unit->name;
             })
             ->addColumn('action', function ($model) {
                 return view($this->folder().'_action', [

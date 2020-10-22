@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Role, Navigation};
+use App\Models\{Role, Navigation, IncomingItem, OutgoingItem};
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -93,5 +93,34 @@ class Controller extends BaseController
             $data += Role::findOrFail($id)->permissions()->find($navigation->permissions->first()['id']) ? 1 : 0;
         }
         return $data;
+    }
+
+    //-----------------------------------
+
+    public function code($model, $date)
+    {
+        if ($model == 'TBM') {
+            $check = IncomingItem::where('date',  $this->dateYmd($date))->orderBy('code', 'desc');
+            $date = str_replace('-', '', $this->dateYmd($date));
+            if ($check->get()->count()) {
+                $getNo = str_replace('TBM-'.$date, '', $check->first()->code)+1;
+                $code = 'TBM-'.$date.sprintf("%04d", $getNo);
+            } else {
+                $code = 'TBM-'.$date.sprintf("%04d", 1);
+            }
+        } else  if ($model == 'TBK') {
+            $check = OutgoingItem::where('date',  $this->dateYmd($date))->orderBy('code', 'desc');
+            $date = str_replace('-', '', $this->dateYmd($date));
+            if ($check->get()->count()) {
+                $getNo = str_replace('TBK-'.$date, '', $check->first()->code)+1;
+                $code = 'TBK-'.$date.sprintf("%04d", $getNo);
+            } else {
+                $code = 'TBK-'.$date.sprintf("%04d", 1);
+            }
+        } else {
+            $code = '';
+        }
+
+        return $code;
     }
 }

@@ -181,7 +181,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Apakah kamu yakin ?',
-                text: `Hapus satuan ${text}.`,
+                html: `Hapus satuan ${text}.`,
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',

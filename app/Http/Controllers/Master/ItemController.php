@@ -38,9 +38,11 @@ class ItemController extends Controller
         $validator = Validator::make($request->all(), [
             'name'  => [ 'required',
                 Rule::unique('items')->where(function ($query) {
-                    return $query->where('unit_id', request('unit_id'))->where('type_id', request('type_id'));
+                    return $query->where('unit_id', request('unit_id'))->where('type_id', request('type_id'))->whereNull('deleted_at');
                 }),
             ],
+            'unit_id'      => ['required'],
+            'type_id'      => ['required'],
         ],  [
             'name.required' => 'Harus diisi.',
             'name.unique' => 'Sudah ada.',
@@ -50,7 +52,17 @@ class ItemController extends Controller
             return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
         }
 
+        $getCode = strtoupper(substr(str_shuffle(request('name')),0,4)).sprintf("%03s", 1);
+        $check = Item::where('code',  $getCode)->orderBy('code', 'desc');
+        if ($check->get()->count()) {
+            $getNo = substr($check->first()->code,0, 4)+1;
+            $code =  strtoupper(substr(str_shuffle(request('name')),0,4)).sprintf("%03s", $getNo);
+        } else {
+            $code = $getCode;
+        }
+
         $model              = new Item;
+        $model->code        = $code;
         $model->name        = request('name');
         $model->unit_id     = request('unit_id');
         $model->type_id     = request('type_id');
@@ -106,6 +118,20 @@ class ItemController extends Controller
         $model->save();
         $model->delete();
 
+        foreach ($model->incomingItems as $ii) {
+            $mii = IncomingItem::find($ii->id);
+            $mii->deleted_by  = auth()->user()->id;
+            $mii->save();
+            $mii->delete();
+        }
+
+        foreach ($model->outgoingItems as $oi) {
+            $moi = OutgoingItem::find($oi->id);
+            $moi->deleted_by  = auth()->user()->id;
+            $moi->save();
+            $moi->delete();
+        }
+
         return json_encode(array('icon' => 'success', 'msg' => 'Berhsil dihapus.'));
     }
 
@@ -121,12 +147,14 @@ class ItemController extends Controller
             ->addColumn('type_id', function ($model) {
                 return $model->type->name;
             })
-            ->addColumn('sum', function ($model) {
-                return $model->type->name;
+            ->addColumn('stock', function ($model) {
+                return $model->stock($model->id);
             })
             ->addColumn('action', function ($model) {
                 $msg = $model->incomingItems->count() ? $model->name.', <span class="text-danger">akan menghapus juga barang masuk dan barang keluar</span>' : $model->name;
                 return view($this->folder().'_action', [
+                    'trasaction'    => $model->incomingItems->count()+$model->outgoingItems->count(),
+                    'stock'         => $model->stock($model->id),
                     'msgDelete'     => $msg,
                     'canEdit'       => $this->can('edit'),
                     'canDelete'     => $this->can('delete'),

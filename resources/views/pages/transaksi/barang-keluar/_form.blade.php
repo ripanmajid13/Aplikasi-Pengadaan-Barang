@@ -20,28 +20,23 @@
                     <select class="form-control form-control-sm select2" id="item_id" name="item_id" style="width: 100%;">
                         <option value=""></option>
                         @foreach ($items as $item)
-                            <option value="{{ $item->id }}" {{ $column->item()->find($item->id) ? 'selected' : '' }}>{{ $item->name }}</option>
+                            <option value="{{ $item->id }}" {{ $column->item()->find($item->id) ? 'selected' : '' }}>{{ $item->name }} ({{ $item->unit->name }})</option>
                         @endforeach
                     </select>
                 </div>
             </div>
 
-            <div class="col-4">
-                <div class="form-group mb-1 text-sm">
-                    <label for="supplier_id" class="font-weight-normal mb-0">Supplier</label>
-                    <select class="form-control form-control-sm select2" id="supplier_id" name="supplier_id" style="width: 100%;">
-                        <option value=""></option>
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}" {{ $column->supplier()->find($supplier->id) ? 'selected' : '' }}>{{ $supplier->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-2">
+            <div class="col-1">
                 <div class="form-group mb-1 text-sm">
                     <label for="qty" class="mb-0 font-weight-normal">Jumlah</label>
                     <input type="text" name="qty" id="qty" class="form-control form-control-sm" value="{{ old('qty') ?? $column->qty }}">
+                </div>
+            </div>
+
+            <div class="col-5">
+                <div class="form-group mb-1 text-sm">
+                    <label for="description" class="mb-0 font-weight-normal">Description</label>
+                    <input type="text" name="description" id="description" class="form-control form-control-sm" value="{{ old('description') ?? $column->description }}">
                 </div>
             </div>
         </div>

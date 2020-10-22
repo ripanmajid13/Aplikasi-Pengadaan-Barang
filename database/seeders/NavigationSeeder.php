@@ -166,6 +166,16 @@ class NavigationSeeder extends Seeder
                 'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at'    => Carbon::now()->format('Y-m-d H:i:s'),
             ],
+            [
+                'parent_id'     => NULL,
+                'name'          => 'Laporan',
+                'folder'        => 'pages',
+                'url'           => 'laporan',
+                'icon'          => 'fas fa-file-alt',
+                'position'      => 3,
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+            ],
         ]);
 
         $this->command->info('Navigation berhasil disimpan');

@@ -31,10 +31,11 @@
             ajax: "{{ $urlTable }}",
             columns: [
                 {data: "DT_RowIndex", class: "align-middle"},
+                {data: "code", class: "align-middle"},
                 {data: "name", class: "align-middle"},
                 {data: "unit_id", class: "align-middle"},
                 {data: "type_id", class: "align-middle"},
-                {data: "sum", class: "align-middle"},
+                {data: "stock", class: "align-middle"},
                 @canany([$canEdit, $canDelete])
                     {data: "action", searchable: false, orderable: false}
                 @endcanany
@@ -111,6 +112,7 @@
 
             me.find('.form-control').removeClass('is-invalid');
             me.find('.error').remove();
+            me.find('.form-group .select2-container .selection .select2-selection').removeClass('error-select2');
 
             me.find('.btn-submit').html(text+'&nbsp; <i id="loading" class="fas fa-spinner fa-pulse"></i>');
             me.find('.btn-submit').attr('type', 'button');
@@ -248,10 +250,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Kode</th>
                         <th>Nama</th>
                         <th>Satuan</th>
                         <th>Jenis</th>
-                        <th>Total</th>
+                        <th>Stok</th>
                         @canany([$canEdit, $canDelete])
                             <th style="width: 5%;"></th>
                         @endcanany
