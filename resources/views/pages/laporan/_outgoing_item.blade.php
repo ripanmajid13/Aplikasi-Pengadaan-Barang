@@ -28,7 +28,7 @@
     </head>
 
     <body>
-        <p class="text-center" style="font-size: 15px; margin-bottom: -10px;"><b>LAPORAN BARANG MASUK</b></p>
+        <p class="text-center" style="font-size: 15px; margin-bottom: -10px;"><b>LAPORAN BARANG KELUAR</b></p>
         <p class="text-center">Tanggal : {{ $date_from }} - {{ $date_to }}</p>
 
         <table class="table" page-break-inside: always;>
@@ -38,8 +38,8 @@
                     <td class="text-center" style="">TANGGAL</td>
                     <td class="text-center" style="">NO TRANSAKSI</td>
                     <td class="text-center" style="">BARANG</td>
-                    <td class="text-center" style="">SUPPLIER</td>
                     <td class="text-center" style="">JUMLAH</td>
+                    <td class="text-center" style="">KETERANGAN</td>
                 </tr>
             </thead>
 
@@ -50,8 +50,8 @@
                         <td>{{ date_format(date_create($item->date), 'd/m/Y') }}</td>
                         <td>{{ $item->code }}</td>
                         <td>{{ $item->item->name }}</td>
-                        <td>{{ $item->supplier->name }}</td>
                         <td>{{ $item->qty }} {{ $item->item->unit->name }}</td>
+                        <td>{{ $item->description }}</td>
                     </tr>
                 @endforeach
             </tbody>

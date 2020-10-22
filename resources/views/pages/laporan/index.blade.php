@@ -78,6 +78,16 @@
                 me.find('.btn-submit').attr('type', 'submit');
             });
         });
+
+        $('#report').on('change', function() {
+            if ($(this).val() == 1) {
+                $('#col-date-from').hide();
+                $('#col-date-to').hide();
+            } else {
+                $('#col-date-from').show();
+                $('#col-date-to').show();
+            }
+        })
     </script>
 @endpush
 
@@ -92,14 +102,14 @@
                             <label for="report" class="font-weight-normal mb-0">Jenis Laporan</label>
                             <select class="form-control form-control-sm select2" id="report" name="report" style="width: 100%;">
                                 <option value=""></option>
-                                <option value="1">Laporan Stok</option>
+                                <option value="1">Laporan Stok Barang</option>
                                 <option value="2">Laporan Barang Masuk</option>
                                 <option value="3">Laporan Barang Keluar</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="col-3">
+                    <div id="col-date-from" class="col-3">
                         <div class="form-group mb-1 text-sm">
                             <label for="date_from" class="font-weight-normal mb-0">Dari Tanggal</label>
                             <div class="input-group date" id="date_from" data-target-input="nearest">
@@ -108,7 +118,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3">
+                    <div id="col-date-to" class="col-3">
                         <div class="form-group mb-1 text-sm">
                             <label for="date_to" class="font-weight-normal mb-0">Sampai Tanggal</label>
                             <div class="input-group date" id="date_to" data-target-input="nearest">

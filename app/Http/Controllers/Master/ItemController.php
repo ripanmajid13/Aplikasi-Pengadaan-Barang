@@ -52,11 +52,11 @@ class ItemController extends Controller
             return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
         }
 
-        $getCode = strtoupper(substr(str_shuffle(request('name')),0,4)).sprintf("%03s", 1);
+        $getCode = strtoupper(substr(str_shuffle(str_replace(' ', '', request('name'))),0,4)).sprintf("%03s", 1);
         $check = Item::where('code',  $getCode)->orderBy('code', 'desc');
         if ($check->get()->count()) {
             $getNo = substr($check->first()->code,0, 4)+1;
-            $code =  strtoupper(substr(str_shuffle(request('name')),0,4)).sprintf("%03s", $getNo);
+            $code =  strtoupper(substr(str_shuffle(str_replace(' ', '', request('name'))),0,4)).sprintf("%03s", $getNo);
         } else {
             $code = $getCode;
         }
