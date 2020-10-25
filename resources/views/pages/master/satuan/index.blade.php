@@ -19,6 +19,19 @@
 
 @push('script_inline')
     <script>
+        btnAfterAction = (me, text) => {
+            me.find('.btn-submit').html(text);
+            me.find('.btn-submit').attr('type', 'submit');
+            me.find('.btn-reset').attr('type', 'reset');
+            me.find('.btn-back').attr('type', 'reset');
+        }
+
+        btnAfterDelete = (me, btn) => {
+            me.html(btn).removeClass('disabled');
+            $('.btn-form').removeClass('disabled');
+            $('.btn-roles').removeClass('disabled');
+        }
+
         let dataTable = $("#dataTable").DataTable({
             "responsive": true,
             "autoWidth": false,
@@ -26,8 +39,9 @@
             serverSide: true,
             ajax: "{{ $urlTable }}",
             columns: [
-                {data: "DT_RowIndex", class: "align-middle"},
+                {data: "DT_RowIndex", searchable: false, class: "align-middle"},
                 {data: "name", class: "align-middle"},
+                {data: "items", class: "align-middle"},
                 {data: "created_by", class: "align-middle"},
                 {data: "updated_by", class: "align-middle"},
                 @canany([$canEdit, $canDelete])
@@ -110,12 +124,11 @@
             me.find('.btn-back').attr('type', 'button');
 
             $.post(url, me.serialize(), function(response) {
-                const data = JSON.parse(response);
-                const {sts, icon, msg} = data;
+                const {sts, icon, msg} = response;
 
                 if (sts == 'errors') {
-                    if ($.isEmptyObject(data) == false) {
-                        form_validation(data);
+                    if ($.isEmptyObject(response) == false) {
+                        form_validation(response);
                     }
                 } else {
                     dataTable.ajax.reload();
@@ -126,19 +139,13 @@
                     }
                 }
 
-                me.find('.btn-submit').html(text);
-                me.find('.btn-submit').attr('type', 'submit');
-                me.find('.btn-reset').attr('type', 'reset');
-                me.find('.btn-back').attr('type', 'reset');
+                btnAfterAction(me, text);
             })
             .fail(function(xhr) {
                 const data = JSON.parse(xhr.responseText);
                 alert_toast('error', data.message);
 
-                me.find('.btn-submit').html(text);
-                me.find('.btn-submit').attr('type', 'submit');
-                me.find('.btn-reset').attr('type', 'reset');
-                me.find('.btn-back').attr('type', 'reset');
+                btnAfterAction(me, text);
             });
         });
 
@@ -195,8 +202,7 @@
                     $('.btn-roles').addClass('disabled').css("opacity", 5);
 
                     $.post(url, { "_method" : "DELETE", "_token" : $('meta[name="csrf-token"]').attr('content') }, function(response) {
-                        const data = JSON.parse(response);
-                        const { icon, msg} = data;
+                        const { icon, msg} = response;
 
                         if(icon == 'success') {
                             dataTable.ajax.reload();
@@ -204,17 +210,13 @@
 
                         alert_toast(icon, msg);
 
-                        me.html(btn).removeClass('disabled');
-                        $('.btn-form').removeClass('disabled');
-                        $('.btn-roles').removeClass('disabled');
+                        btnAfterDelete(me, btn);
                     })
                     .fail(function(xhr) {
                         const data = JSON.parse(xhr.responseText);
                         alert_toast('error', data.message);
 
-                        me.html(btn).removeClass('disabled');
-                        $('.btn-form').removeClass('disabled');
-                        $('.btn-roles').removeClass('disabled');
+                        btnAfterDelete(me, btn);
                     });
                 }
             })
@@ -239,6 +241,7 @@
                     <tr>
                         <th>#</th>
                         <th>Nama</th>
+                        <th>Barang</th>
                         <th>Created By</th>
                         <th>Updated By</th>
                         @canany([$canEdit, $canDelete])

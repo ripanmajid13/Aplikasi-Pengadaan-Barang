@@ -136,7 +136,7 @@ class OutgoingItemController extends Controller
                 return Carbon::parse($model->date)->format('d/m/Y');
             })
             ->addColumn('item_id', function ($model) {
-                return $model->item->name;
+                return $model->item->type->name.' '.$model->item->name;
             })
             ->addColumn('qty', function ($model) {
                 return $model->qty.' '.$model->item->unit->name;

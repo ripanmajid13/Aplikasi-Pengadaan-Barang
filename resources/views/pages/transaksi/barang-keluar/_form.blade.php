@@ -20,7 +20,7 @@
                     <select class="form-control form-control-sm select2" id="item_id" name="item_id" style="width: 100%;">
                         <option value=""></option>
                         @foreach ($items as $item)
-                            <option value="{{ $item->id }}" {{ $column->item()->find($item->id) ? 'selected' : '' }}>{{ $item->name }} ({{ $item->unit->name }})</option>
+                            <option value="{{ $item->id }}" {{ $column->item()->find($item->id) ? 'selected' : '' }}>{{ $item->type->name.' '.$item->name }} ({{ $item->unit->name }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -35,7 +35,7 @@
 
             <div class="col-5">
                 <div class="form-group mb-1 text-sm">
-                    <label for="description" class="mb-0 font-weight-normal">Description</label>
+                    <label for="description" class="mb-0 font-weight-normal">Deskripsi</label>
                     <input type="text" name="description" id="description" class="form-control form-control-sm" value="{{ old('description') ?? $column->description }}">
                 </div>
             </div>

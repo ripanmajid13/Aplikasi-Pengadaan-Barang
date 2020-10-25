@@ -15,23 +15,23 @@
         <link rel="icon" href="<x-layouts.icon />" type="image/gif" sizes="16x16">
 
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="{{ asset('public/plugins/fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
         <!-- Ionicons -->
         <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
         <!-- overlayScrollbars -->
-        <link rel="stylesheet" href="{{ asset('public/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
         <!-- SweetAlert2 -->
-        <link rel="stylesheet" href="{{ asset('public/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
         <!-- Toastr -->
-        <link rel="stylesheet" href="{{ asset('public/plugins/toastr/toastr.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
         <!-- Style Plugin -->
         @stack('style_plugin')
         <!-- Theme style -->
-        <link rel="stylesheet" href="{{ asset('public/dist/css/adminlte.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
         <!-- Google Font: Source Sans Pro -->
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
         <!-- Costum Css -->
-        <link rel="stylesheet" href="{{ asset('public/css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <!-- Style Inline -->
         @stack('style_inline')
     </head>
@@ -40,21 +40,21 @@
         @yield('body')
 
         <!-- jQuery -->
-        <script src="{{ asset('public/plugins/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
         <!-- Bootstrap 4 -->
-        <script src="{{ asset('public/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <!-- Script Plugin -->
         @stack('script_plugin')
         <!-- overlayScrollbars -->
-        <script src="{{ asset('public/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+        <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
         <!-- SweetAlert2 -->
-        <script src="{{ asset('public/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+        <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
         <!-- Toastr -->
-        <script src="{{ asset('public/plugins/toastr/toastr.min.js') }}"></script>
+        <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
         <!-- AdminLTE App -->
-        <script src="{{ asset('public/dist/js/adminlte.min.js') }}"></script>
+        <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
         <!-- Costum Js -->
-        <script src="{{ asset('public/js/app.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
         <!-- Script Inline -->
         @stack('script_inline')
     </body>

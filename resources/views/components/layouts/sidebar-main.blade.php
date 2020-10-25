@@ -32,7 +32,7 @@
                 @foreach ($navigations as $navigation)
                     @canany($navigation->children->pluck('url'))
                         @if ($navigation->children->count())
-                            @php $active = count(array_intersect([request()->path()], json_decode($navigation->children->pluck('url')))); @endphp
+                            @php $active = count(array_intersect([request()->segment(1)], json_decode($navigation->children->pluck('url')))); @endphp
 
                             <li class="nav-item has-treeview{{ $active ? ' menu-open' : ''}}">
                                 <a href="javascripy:;" class="nav-link{{ $active ? ' active' : ''}} pb-1">
@@ -44,7 +44,7 @@
                                     @foreach ($navigation->children as $child)
                                         @can($child->url)
                                             <li class="nav-item">
-                                                <a href="{{ $child->url }}" class="nav-link {{ request()->segment(1) == $child->url ? 'active' : '' }} pb-1">
+                                                <a href="{{ url($child->url) }}" class="nav-link {{ request()->segment(1) == $child->url ? 'active' : '' }} pb-1">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>{{ $child->name }}</p>
                                                 </a>
@@ -58,7 +58,7 @@
                         @isset($navigation->url)
                             @can($navigation->url)
                                 <li class="nav-item">
-                                    <a href="{{ $navigation->url }}" class="nav-link {{ request()->segment(1) == $navigation->url ? 'active' : '' }} pb-1">
+                                    <a href="{{ url($navigation->url) }}" class="nav-link {{ request()->segment(1) == $navigation->url ? 'active' : '' }} pb-1">
                                         <i class="nav-icon {{ $navigation->icon }}"></i>
                                         <p>{{ $navigation->name }}</p>
                                     </a>

@@ -4,285 +4,234 @@
 @endpush
 
 @push('script_plugin')
+    <!-- ChartJS -->
+    <script src="{{ asset('plugins/chart.js/Chart.min.js') }}"></script>
+@endpush
+
+@push('script_inline')
+    <script>
+        new Chart(document.getElementById('lineChart').getContext('2d'), {
+            type: 'line',
+            data:  {
+                labels  : ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                datasets: [
+                    {
+                        label               : 'Barang Masuk',
+                        fill                : false,
+                        backgroundColor     : '#0d47a1',
+                        borderColor         : '#0d47a1',
+                        // pointRadius         : true,
+                        pointColor          : '#0d47a1',
+                        pointStrokeColor    : '#0d47a1',
+                        pointHighlightFill  : '#fff',
+                        pointHighlightStroke: '#0d47a1',
+                        data                : {{ $ii }}
+                    },
+                    {
+                        label               : 'Barang Keluar',
+                        fill                : false,
+                        backgroundColor     : '#CC0000',
+                        borderColor         : '#CC0000',
+                        // pointRadius         : true,
+                        pointColor          : '#CC0000',
+                        pointStrokeColor    : '#CC0000',
+                        pointHighlightFill  : '#fff',
+                        pointHighlightStroke: '#CC0000',
+                        data                : {{ $oi }}
+                    },
+                ]
+            },
+            options: {
+                maintainAspectRatio : false,
+                responsive : true,
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                    }],
+                    yAxes: [{
+                        display: true,
+                        // ticks: {
+						// 	min: 1,
+						// }
+                    }]
+                }
+            }
+        })
+    </script>
 @endpush
 
 @section('content')
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ $item }}</h3>
-                    <p>Total Barang</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-info mb-3 p-1" style="min-height: 70px;">
+                <span class="info-box-icon bg-dark elevation-1">
+                    <i class="fas fa-shopping-bag text-info"></i>
+                </span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text text-dark">Barang</span>
+                    <span class="info-box-number text-dark">{{ $item }}</span>
+              </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-success mb-3 p-1" style="min-height: 70px;">
+                <span class="info-box-icon bg-dark elevation-1">
+                    <i class="fas fa-industry text-success"></i>
+                </span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text text-dark">Supplier</span>
+                    <span class="info-box-number text-dark">{{ $supplier }}</span>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ $supplier }}</h3>
-                    <p>Total Supplier</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
+        <div class="clearfix hidden-md-up"></div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-warning mb-3 p-1" style="min-height: 70px;">
+                <span class="info-box-icon bg-dark elevation-1">
+                    <i class="fas fa-tags text-warning"></i>
+                </span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text text-dark">Jenis Barang</span>
+                    <span class="info-box-number text-dark">{{ $type }}</span>
                 </div>
             </div>
         </div>
 
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>44</h3>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-danger mb-3 p-1"  style="min-height: 70px;">
+                <span class="info-box-icon bg-dark elevation-1">
+                    <i class="fas fa-users text-danger"></i>
+                </span>
 
-                <p>User Registrations</p>
-              </div>
-              <div class="icon">
-                    <i class="ion ion-person"></i>
-              </div>
+                <div class="info-box-content">
+                    <span class="info-box-text text-dark">Pengguna</span>
+                    <span class="info-box-number text-dark">{{ $user }}</span>
+                </div>
             </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
+        </div>
 
-                <p>Unique Visitors</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
+        <div class="col-12">
+            <div class="card card-info">
+                <div class="card-header py-1 px-2">
+                    <h3 class="card-title text-md text-light">Total Transaksi Barang Tahun {{ date('Y') }}</h3>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="chart">
+                        <canvas id="lineChart" style="height: 250px; max-height: 100%; max-width: 100%;"></canvas>
+                    </div>
+                </div>
             </div>
-          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card card-warning">
+                <div class="card-header border-transparent text-center px-2 py-1">
+                    <h3 class="m-0 text-md text-light">Stok Barang Minimum</h3>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table m-0 text-xs">
+                            <thead>
+                                <tr>
+                                    <th class="px-2 py-1">Barang</th>
+                                    <th class="px-2 py-1">Stok</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($itemMinimum as $item)
+                                    <tr>
+                                        <td class="px-2 py-1">{{ $item['name'] }}</td>
+                                        <td class="px-2 py-1">{{ $item['stock'] }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="2" class="px-2 py-1 text-center">Tidak ada barang stok minimum.</td>
+                                    </tr>
+                                @endforelse
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card card-primary">
+                <div class="card-header border-transparent text-center px-2 py-1">
+                    <h3 class="m-0 text-md text-light">5 Transaksi Terakhir Barang Masuk</h3>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table m-0 text-xs">
+                            <thead>
+                                <tr>
+                                    <th class="px-2 py-1">Tanggal</th>
+                                    <th class="px-2 py-1">Barang</th>
+                                    <th class="px-2 py-1">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($incomingItem as $ii)
+                                    <tr>
+                                        <td class="px-2 py-1">{{ date_format(date_create($ii->date), 'd/m/Y') }}</td>
+                                        <td class="px-2 py-1">{{ $ii->item->type->name.' '.$ii->item->name }}</td>
+                                        <td class="px-2 py-1">{{ $ii->qty.' '.$ii->item->unit->name }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card card-danger">
+                <div class="card-header border-transparent text-center px-2 py-1">
+                    <h3 class="m-0 text-md text-light">5 Transaksi Terakhir Barang Keluar</h3>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table m-0 text-xs">
+                            <thead>
+                                <tr>
+                                    <th class="px-2 py-1">Tanggal</th>
+                                    <th class="px-2 py-1">Barang</th>
+                                    <th class="px-2 py-1">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($outgoingItem as $oi)
+                                    <tr>
+                                        <td class="px-2 py-1">{{ date_format(date_create($oi->date), 'd/m/Y') }}</td>
+                                        <td class="px-2 py-1">{{ $oi->item->type->name.' '.$oi->item->name }}</td>
+                                        <td class="px-2 py-1">{{ $oi->qty.' '.$oi->item->unit->name }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-
-
-
-
-    <div class="card card-primary card-outline">
-        <div class="card-header">
-          <h3 class="card-title">
-            <i class="fas fa-edit"></i>
-            Buttons
-          </h3>
-        </div>
-        <div class="card-body pad table-responsive">
-          <p>Various types of buttons. Using the base class <code>.btn</code></p>
-          <table class="table table-bordered text-center">
-            <tr>
-              <th>Normal</th>
-              <th>Large <code>.btn-lg</code></th>
-              <th>Small <code>.btn-sm</code></th>
-              <th>Extra Small <code>.btn-xs</code></th>
-              <th>Flat <code>.btn-flat</code></th>
-              <th>Disabled <code>.disabled</code></th>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-default">Default</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-default btn-lg">Default</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-default btn-sm">Default</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-default btn-xs">Default</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-default btn-flat">Default</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-default disabled">Default</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-primary">Primary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-primary btn-lg">Primary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-primary btn-sm">Primary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-primary btn-xs">Primary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-primary btn-flat">Primary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-primary disabled">Primary</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-secondary">Secondary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-secondary btn-lg">Secondary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-secondary btn-sm">Secondary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-secondary btn-xs">Secondary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-secondary btn-flat">Secondary</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-secondary disabled">Secondary</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-success">Success</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-success btn-lg">Success</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-success btn-sm">Success</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-success btn-xs">Success</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-success btn-flat">Success</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-success disabled">Success</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-info">Info</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-info btn-lg">Info</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-info btn-sm">Info</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-info btn-xs">Info</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-info btn-flat">Info</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-info disabled">Info</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-danger">Danger</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-danger btn-lg">Danger</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-danger btn-sm">Danger</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-danger btn-xs">Danger</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-danger btn-flat">Danger</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-danger disabled">Danger</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-block btn-warning">Warning</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-warning btn-lg">Warning</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-warning btn-sm">Warning</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-warning btn-xs">Warning</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-warning btn-flat">Warning</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-block btn-warning disabled">Warning</button>
-              </td>
-            </tr>
-            <tr>
-                <td>
-                  <button type="button" class="btn btn-block btn-light">Light</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-light btn-lg">Light</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-light btn-sm">Light</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-light btn-xs">Light</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-light btn-flat">Light</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-light disabled">Light</button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button type="button" class="btn btn-block btn-dark">Dark</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-dark btn-lg">Dark</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-dark btn-sm">Dark</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-dark btn-xs">Dark</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-dark btn-flat">Dark</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-dark disabled">Dark</button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button type="button" class="btn btn-block btn-link">Link</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-link btn-lg">Link</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-link btn-sm">Link</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-link btn-xs">Link</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-link btn-flat">Link</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-block btn-link disabled">Link</button>
-                </td>
-              </tr>
-          </table>
-        </div>
 @endsection

@@ -10,14 +10,30 @@ use Yajra\Datatables\Datatables;
 
 class TypeController extends Controller
 {
+    private function validator($request, $id = false) {
+        $validator = Validator::make($request->all(), [
+            'name'      => ['required', 'unique:types,name,'.$id],
+        ],  [
+            'name.required' => 'Harus diisi.',
+            'name.unique' => 'Sudah digunakan.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'sts' => 'errors',
+                'errors' => $validator->errors()
+            ]);
+        }
+    }
+
     public function index()
     {
         return view($this->folder().'index', [
-            'urlTable'  => route($this->link().'table'),
-            'urlCreate' => route($this->link().'create'),
             'canCreate' => $this->can('create'),
             'canEdit'   => $this->can('edit'),
             'canDelete' => $this->can('delete'),
+            'urlTable'  => route($this->link().'table'),
+            'urlCreate' => route($this->link().'create'),
         ]);
     }
 
@@ -32,15 +48,8 @@ class TypeController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name'      => ['required', 'unique:types,name'],
-        ],  [
-            'name.required' => 'Harus diisi.',
-            'name.unique' => 'Sudah digunakan.',
-        ]);
-
-        if ($validator->fails()) {
-            return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
+        if ($this->validator($request)) {
+            return $this->validator($request);
         }
 
         $model              = new Type;
@@ -49,7 +58,11 @@ class TypeController extends Controller
         $model->updated_by  = auth()->user()->id;
         $model->save();
 
-        return json_encode(array('sts' => 'store', 'icon' => 'success', 'msg' => 'Berhsil disimpan.'));
+        return response()->json([
+            'sts' => 'store',
+            'icon' => 'success',
+            'msg' => 'Berhasil disimpan.'
+        ]);
     }
 
     public function edit($id)
@@ -63,15 +76,8 @@ class TypeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name'      => ['required', 'unique:types,name,'.$id],
-        ],  [
-            'name.required' => 'Harus diisi.',
-            'name.unique' => 'Sudah digunakan.',
-        ]);
-
-        if ($validator->fails()) {
-            return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
+        if ($this->validator($request, $id)) {
+            return $this->validator($request, $id);
         }
 
         $model              = Type::findOrFail($id);
@@ -79,7 +85,11 @@ class TypeController extends Controller
         $model->updated_by  = auth()->user()->id;
         $model->save();
 
-        return json_encode(array('sts' => 'update', 'icon' => 'success', 'msg' => 'Berhsil diperbaharui.'));
+        return response()->json([
+            'sts' => 'update',
+            'icon' => 'success',
+            'msg' => 'Berhsil diperbaharui.'
+        ]);
     }
 
     public function destroy($id)
@@ -89,7 +99,10 @@ class TypeController extends Controller
         $model->save();
         $model->delete();
 
-        return json_encode(array('icon' => 'success', 'msg' => 'Berhsil dihapus.'));
+        return response()->json([
+            'icon' => 'success',
+            'msg' => 'Berhsil dihapus.'
+        ]);
     }
 
     //---------------------------------------------
@@ -98,6 +111,9 @@ class TypeController extends Controller
     {
         $model = Type::orderBy('name', 'asc')->get();
         return DataTables::of($model)
+        ->addColumn('items', function ($model) {
+            return $model->items->count();
+        })
             ->addColumn('created_by', function ($model) {
                 return $model->createdBy->name;
             })

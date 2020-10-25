@@ -17,7 +17,7 @@
     animation-name: none !important;
 }
 
-/* ---------------------temptel---------------------- */
+/* ---------------------template---------------------- */
 
 .content-wrapper {
     background: #fafafa;
@@ -127,4 +127,119 @@
 .btn-dark:hover {
     background-color: #263238;
     border-color: #37474F;
+}
+
+
+/* ---------------------bg---------------------- */
+
+.bg-default {
+    background-color: #2BBBAD !important;
+}
+
+.bg-primary {
+    background-color: #4285F4 !important;
+}
+
+.bg-secondary {
+    background-color: #aa66cc !important;
+}
+
+.bg-success {
+    background-color: #00C851 !important;
+}
+
+.bg-info {
+    background-color: #33b5e5 !important;
+}
+
+.bg-danger {
+    background-color: #ff4444 !important;
+}
+
+.bg-warning {
+    background-color: #ffbb33 !important;
+}
+
+.bg-light {
+    background-color: #eeeeee !important;
+}
+
+.bg-dark {
+    background-color: #37474F !important;
+}
+
+/* ---------------------bg---------------------- */
+
+.text-default {
+    color: #2BBBAD !important;
+}
+
+.text-primary {
+    color: #4285F4 !important;
+}
+
+.text-secondary {
+    color: #aa66cc !important;
+}
+
+.text-success {
+    color: #00C851 !important;
+}
+
+.text-info {
+    color: #33b5e5 !important;
+}
+
+.text-danger {
+    color: #ff4444 !important;
+}
+
+.text-warning {
+    color: #ffbb33 !important;
+}
+
+.text-light {
+    color: #eeeeee !important;
+}
+
+.text-dark {
+    color: #37474F !important;
+}
+
+/* ---------------------card---------------------- */
+
+.card-default:not(.card-outline) > .card-header {
+    background-color: #2BBBAD;
+}
+
+.card-primary:not(.card-outline) > .card-header {
+    background-color: #4285F4;
+}
+
+.card-secondary:not(.card-outline) > .card-header {
+    background-color: #aa66cc;
+}
+
+.card-success:not(.card-outline) > .card-header {
+    background-color: #00C851;
+}
+
+.card-info:not(.card-outline) > .card-header {
+    background-color: #33b5e5;
+}
+
+.card-danger:not(.card-outline) > .card-header {
+    background-color: #ff4444;
+}
+
+.card-warning:not(.card-outline) > .card-header {
+    background-color: #ffbb33;
+}
+
+.card-light:not(.card-outline) > .card-header {
+    background-color: #eeeeee;
+}
+
+.card-dark:not(.card-outline) > .card-header {
+    background-color: #37474F;
 }

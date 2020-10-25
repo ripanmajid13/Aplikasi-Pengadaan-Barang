@@ -126,7 +126,7 @@ class IncomingItemController extends Controller
                 return Carbon::parse($model->date)->format('d/m/Y');
             })
             ->addColumn('item_id', function ($model) {
-                return $model->item->name;
+                return $model->item->type->name.' '.$model->item->name;
             })
             ->addColumn('supplier_id', function ($model) {
                 return $model->supplier->name;
