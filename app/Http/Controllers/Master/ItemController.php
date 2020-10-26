@@ -36,7 +36,7 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'  => [ 'required',
+            'name'  => [ 'required', 'min:4',
                 Rule::unique('items')->where(function ($query) {
                     return $query->where('unit_id', request('unit_id'))->where('type_id', request('type_id'))->whereNull('deleted_at');
                 }),
@@ -87,7 +87,7 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name'  => [ 'required',
+            'name'  => [ 'required', 'min:4',
                 Rule::unique('items')->where(function ($query) use ($id) {
                     return $query->where('unit_id', request('unit_id'))->where('type_id', request('type_id'))->whereNotIn('id', [$id]);
                 }),

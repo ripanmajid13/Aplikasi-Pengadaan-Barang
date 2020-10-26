@@ -34,6 +34,33 @@
             format: 'DD/MM/YYYY'
         });
 
+        $("#image_profile").change(function(e) {
+            $('#form-image').find('.form-control').removeClass('is-invalid');
+            $('#form-image').find('.error').remove();
+
+            const ext = this.value.match(/\.([^\.]+)$/)[1];
+            switch (ext) {
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                    var reader = new FileReader();
+                    var filename = $("#image_profile").val();
+                    filename = filename.substring(filename.lastIndexOf('\\')+1);
+                    reader.onload = function(e) {
+                        $('.img-profile').attr('src', e.target.result);
+                        $('.img-profile').hide();
+                        $('.img-profile').fadeIn(500);
+                        $('.custom-file-label').text(filename);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    break;
+
+                default:
+                    $(this).addClass('is-invalid');
+                    $(this).closest(".form-group").append('<span id="image_profile-error" class="error invalid-feedback" style="display: inline;">Harus file bertipe : png, jpg, jpeg.</span>');
+            }
+        });
+
         $('#form-name').on('submit', function(e) {
             e.preventDefault();
 
@@ -532,8 +559,8 @@
                                                                     <label for="gender" class="font-weight-normal mb-0 text-sm">Gender</label>
                                                                     <select class="form-control form-control-sm select2" id="gender" name="gender" style="width: 100%;">
                                                                         <option value=""></option>
-                                                                        <option value="m" {{ $profile->gender == 'm' ? 'selected' : '' }}>Man</option>
-                                                                        <option value="w" {{ $profile->gender == 'w' ? 'selected' : '' }}>Women</option>
+                                                                        <option value="m" {{ $profile->gender == 'm' ? 'selected' : '' }}>Male</option>
+                                                                        <option value="w" {{ $profile->gender == 'w' ? 'selected' : '' }}>Female</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -573,7 +600,7 @@
                                                             <label for="image_profile" class="font-weight-normal mb-0 text-sm">File</label>
                                                             <div class="input-group">
                                                                 <div class="custom-file">
-                                                                    <input type="file" class="custom-file-input form-control form-control-sm" id="image_profile" name="image_profile">
+                                                                    <input type="file" class="custom-file-input form-control form-control-sm" id="image_profile" name="image_profile" accept=".jpeg, .jpg, .png">
                                                                     <label class="custom-file-label" for="image_profile">Choose file</label>
                                                                 </div>
                                                             </div>
