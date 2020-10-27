@@ -18,6 +18,7 @@ class CreateSuppliersTable extends Migration
             $table->string('name', 100);
             $table->string('hp', 25);
             $table->text('address');
+            $table->text('image')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();

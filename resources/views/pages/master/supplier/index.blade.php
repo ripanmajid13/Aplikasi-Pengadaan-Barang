@@ -15,6 +15,8 @@
     <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <!-- bs-custom-file-input -->
+    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 @endpush
 
 @push('script_inline')
@@ -83,6 +85,7 @@
             $.post($(this).attr('href'), { "_token" : $('meta[name="csrf-token"]').attr('content') },  function(response) {
                 $('.card-title').html(`${$(this).attr('title') ? 'Edit' :'Create'} Data`);
                 $('#body-form').html(response);
+                bsCustomFileInput.init();
             })
             .fail(function(xhr) {
                 const data = JSON.parse(xhr.responseText);
@@ -101,46 +104,55 @@
                   text = $(this).find('.btn-submit').html(),
                   url = $(this).attr('action');
 
-            me.find('.form-control').removeClass('is-invalid');
-            me.find('.error').remove();
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: new FormData(this),
+                beforeSend: function() {
+                    me.find('.form-control').removeClass('is-invalid');
+                    me.find('.error').remove();
 
-            me.find('.btn-submit').html(text+'&nbsp; <i id="loading" class="fas fa-spinner fa-pulse"></i>');
-            me.find('.btn-submit').attr('type', 'button');
-            me.find('.btn-reset').attr('type', 'button');
-            me.find('.btn-back').attr('type', 'button');
+                    me.find('.btn-submit').html(text+'&nbsp; <i id="loading" class="fas fa-spinner fa-pulse"></i>');
+                    me.find('.btn-submit').attr('type', 'button');
+                    me.find('.btn-reset').attr('type', 'button');
+                    me.find('.btn-back').attr('type', 'button');
+                },
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    const {sts, icon, msg} = response;
 
-            $.post(url, me.serialize(), function(response) {
-                const data = JSON.parse(response);
-                const {sts, icon, msg} = data;
+                    if (sts == 'errors') {
+                        if ($.isEmptyObject(response) == false) {
+                            form_validation(response);
+                        }
+                    } else {
+                        dataTable.ajax.reload();
+                        alert_toast(icon, msg);
 
-                if (sts == 'errors') {
-                    if ($.isEmptyObject(data) == false) {
-                        form_validation(data);
+                        if (sts =='store') {
+                            me.find('#name').val('');
+                            me.find('#hp').val('');
+                            me.find('#address').val('');
+                            me.find('#image').val('');
+                            me.find('.custom-file-label').html('Choose file');
+                        }
                     }
-                } else {
-                    dataTable.ajax.reload();
-                    alert_toast(icon, msg);
 
-                    if (sts =='store') {
-                        me.find('#name').val('');
-                        me.find('#hp').val('');
-                        me.find('#address').val('');
-                    }
+                    me.find('.btn-submit').html(text);
+                    me.find('.btn-submit').attr('type', 'submit');
+                    me.find('.btn-reset').attr('type', 'reset');
+                    me.find('.btn-back').attr('type', 'reset');
+                },
+                error: function(xhr) {
+                    const data = JSON.parse(xhr.responseText);
+                    alert_toast('error', data.message);
+
+                    me.find('.btn-submit').html(text);
+                    me.find('.btn-submit').attr('type', 'submit');
+                    me.find('.btn-reset').attr('type', 'reset');
+                    me.find('.btn-back').attr('type', 'reset');
                 }
-
-                me.find('.btn-submit').html(text);
-                me.find('.btn-submit').attr('type', 'submit');
-                me.find('.btn-reset').attr('type', 'reset');
-                me.find('.btn-back').attr('type', 'reset');
-            })
-            .fail(function(xhr) {
-                const data = JSON.parse(xhr.responseText);
-                alert_toast('error', data.message);
-
-                me.find('.btn-submit').html(text);
-                me.find('.btn-submit').attr('type', 'submit');
-                me.find('.btn-reset').attr('type', 'reset');
-                me.find('.btn-back').attr('type', 'reset');
             });
         });
 

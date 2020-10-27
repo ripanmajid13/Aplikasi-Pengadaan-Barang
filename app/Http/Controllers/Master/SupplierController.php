@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Models\Supplier;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Validator, Storage};
 use Yajra\Datatables\Datatables;
 
 class SupplierController extends Controller
@@ -33,9 +33,10 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => ['required'],
-            'hp'        => ['required', 'unique:suppliers,hp'],
-            'address'   => ['required'],
+            'name'          => ['required'],
+            'hp'            => ['required', 'unique:suppliers,hp'],
+            'address'       => ['required'],
+            'image_logo'    => ['nullable', 'mimes:png,jpg,jpeg']
         ],  [
             'name.required' => 'Harus diisi.',
             'hp.required' => 'Harus diisi.',
@@ -47,15 +48,26 @@ class SupplierController extends Controller
             return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
         }
 
+        if (request()->file('image_logo')) {
+            $image = request()->file('image_logo')->store('supplier', 'public_image');
+        } else {
+            $image = NULL;
+        }
+
         $model              = new Supplier;
         $model->name        = request('name');
         $model->hp          = request('hp');
         $model->address     = request('address');
+        $model->image       = $image;
         $model->created_by  = auth()->user()->id;
         $model->updated_by  = auth()->user()->id;
         $model->save();
 
-        return json_encode(array('sts' => 'store', 'icon' => 'success', 'msg' => 'Berhsil disimpan.'));
+        return response()->json([
+            'sts'   => 'store',
+            'icon'  => 'success',
+            'msg'   => 'Berhsil disimpan.'
+        ]);
     }
 
     public function edit($id)
@@ -73,6 +85,7 @@ class SupplierController extends Controller
             'name'      => ['required'],
             'hp'        => ['required', 'unique:suppliers,hp,'.$id],
             'address'   => ['required'],
+            'image'     => ['nullable', 'mimes:png,jpg,jpeg']
         ],  [
             'name.required' => 'Harus diisi.',
             'hp.required' => 'Harus diisi.',
@@ -82,6 +95,13 @@ class SupplierController extends Controller
 
         if ($validator->fails()) {
             return json_encode(array('sts' => 'errors', 'errors' => $validator->errors()));
+        }
+
+        if ($request->hasFile('image')) {
+            Storage::disk('public_image')->delete(Supplier::where('user_id', auth()->user()->id)->first()->image);
+            $image = request()->file('image_profile')->store('supplier', 'public_image');
+        } else {
+            $image = NULL;
         }
 
         $model              = Supplier::findOrFail($id);
